@@ -15,9 +15,9 @@ public class KafkaEventClient {
     @Value("${sht.bootstrap}")
     private String bootstrapServer;
 
-    private Producer<String, SpecificRecordBase> producer;
+    private Producer<Void, SpecificRecordBase> producer;
 
-    public Producer<String, SpecificRecordBase> getProducer() {
+    public Producer<Void, SpecificRecordBase> getProducer() {
         if (producer == null) {
             initProducer();
         }

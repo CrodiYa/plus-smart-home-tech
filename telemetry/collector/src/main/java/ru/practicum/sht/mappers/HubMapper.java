@@ -15,19 +15,19 @@ public interface HubMapper {
 
         switch (event) {
             case DeviceAddedEvent addedEvent -> {
-                DeviceAddedAvro payload = toDeviceAddedAvro(addedEvent);
+                DeviceAddedEventAvro payload = toDeviceAddedAvro(addedEvent);
                 return builder.setPayload(payload).build();
             }
             case DeviceRemovedEvent removedEvent -> {
-                DeviceRemovedAvro payload = toDeviceRemovedAvro(removedEvent);
+                DeviceRemovedEventAvro payload = toDeviceRemovedAvro(removedEvent);
                 return builder.setPayload(payload).build();
             }
             case ScenarioAddedEvent scenarioAddedEvent -> {
-                ScenarioAddedAvro payload = toScenarioAddedAvro(scenarioAddedEvent);
+                ScenarioAddedEventAvro payload = toScenarioAddedAvro(scenarioAddedEvent);
                 return builder.setPayload(payload).build();
             }
             case ScenarioRemovedEvent scenarioRemovedEvent -> {
-                ScenarioRemovedAvro payload = toScenarioRemovedAvro(scenarioRemovedEvent);
+                ScenarioRemovedEventAvro payload = toScenarioRemovedAvro(scenarioRemovedEvent);
                 return builder.setPayload(payload).build();
             }
             default -> throw new IllegalArgumentException("Unknown hub event type: " + event.getClass());
@@ -35,11 +35,11 @@ public interface HubMapper {
     }
 
     @Mapping(target = "type", source = "deviceType")
-    DeviceAddedAvro toDeviceAddedAvro(DeviceAddedEvent event);
+    DeviceAddedEventAvro toDeviceAddedAvro(DeviceAddedEvent event);
 
-    DeviceRemovedAvro toDeviceRemovedAvro(DeviceRemovedEvent event);
+    DeviceRemovedEventAvro toDeviceRemovedAvro(DeviceRemovedEvent event);
 
-    ScenarioAddedAvro toScenarioAddedAvro(ScenarioAddedEvent event);
+    ScenarioAddedEventAvro toScenarioAddedAvro(ScenarioAddedEvent event);
 
-    ScenarioRemovedAvro toScenarioRemovedAvro(ScenarioRemovedEvent event);
+    ScenarioRemovedEventAvro toScenarioRemovedAvro(ScenarioRemovedEvent event);
 }

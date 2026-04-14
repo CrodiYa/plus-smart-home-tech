@@ -1,10 +1,10 @@
 package ru.practicum.sht.service;
 
 import lombok.RequiredArgsConstructor;
-import ru.practicum.sht.kafka.KafkaEventClient;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import ru.practicum.sht.kafka.KafkaEventClient;
 import ru.practicum.sht.mappers.HubMapper;
 import ru.practicum.sht.mappers.SensorMapper;
 import ru.practicum.sht.model.hub.HubEvent;
@@ -34,6 +34,6 @@ public class EventService {
     public void addHubEvent(HubEvent hubEvent) {
         HubEventAvro hubEventAvro = hubMapper.toHubEventAvro(hubEvent);
 
-        kafkaClient.getProducer().send(new ProducerRecord<>(sensorsTopic, hubEventAvro));
+        kafkaClient.getProducer().send(new ProducerRecord<>(hubsTopic, hubEventAvro));
     }
 }
