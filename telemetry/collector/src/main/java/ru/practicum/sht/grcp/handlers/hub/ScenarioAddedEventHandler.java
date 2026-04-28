@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import ru.practicum.sht.kafka.KafkaEventClient;
 import ru.yandex.practicum.grpc.telemetry.event.HubEventProto;
 import ru.yandex.practicum.grpc.telemetry.event.ScenarioAddedEventProto;
+import ru.yandex.practicum.grpc.telemetry.event.ScenarioConditionProto;
 import ru.yandex.practicum.kafka.telemetry.event.*;
 
 import java.util.stream.Collectors;
@@ -30,7 +31,7 @@ public class ScenarioAddedEventHandler extends BaseHubEventHandler<ScenarioAdded
                                 .setSensorId(condition.getSensorId())
                                 .setType(ConditionTypeAvro.valueOf(condition.getType().name()))
                                 .setOperation(ConditionOperationAvro.valueOf(condition.getOperation().name()))
-                                .setValue(condition.getValueCase())
+                                .setValue(condition.getValueCase().equals(ScenarioConditionProto.ValueCase.BOOL_VALUE) ? condition.getBoolValue() : condition.getIntValue())
                                 .build())
                         .collect(Collectors.toList()))
                 .setActions(event.getActionList().stream()
