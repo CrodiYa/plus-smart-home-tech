@@ -1,4 +1,5 @@
 package ru.practicum.sht.grcp.handlers.hub;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.specific.SpecificRecordBase;
