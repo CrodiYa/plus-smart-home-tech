@@ -15,7 +15,7 @@ public class SnapshotService {
 
     private final Map<String, SensorsSnapshotAvro> snapshots = new ConcurrentHashMap<>();
 
-    Optional<SensorsSnapshotAvro> updateState(SensorEventAvro event) {
+    public Optional<SensorsSnapshotAvro> updateState(SensorEventAvro event) {
 
         final SensorsSnapshotAvro snapshot = snapshots.computeIfAbsent(
                 event.getHubId(),

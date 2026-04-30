@@ -26,6 +26,7 @@ public class HubEventProcessor implements Runnable {
     @Value("${sht.telemetry.hubs.topic}")
     private String hubsTopic;
     private final Duration consumeAttemptTimeout;
+    private static final long OFFSET_INCREMENT = 1L;
 
     private final AnalyzerService analyzerService;
     private final KafkaConsumer<String, HubEventAvro> consumer;
@@ -56,7 +57,7 @@ public class HubEventProcessor implements Runnable {
                     try {
                         analyzerService.handleHubEvent(record.value());
                         currentOffsets.put(new TopicPartition(record.topic(), record.partition()),
-                                new OffsetAndMetadata(record.offset() + 1));
+                                new OffsetAndMetadata(record.offset() + OFFSET_INCREMENT));
                     } catch (Exception e) {
                         log.error("Ошибка при обработке события хаба с оффсетом {}", record.offset(), e);
                     }

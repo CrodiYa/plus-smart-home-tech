@@ -26,6 +26,7 @@ public class SnapshotProcessor {
     @Value("${sht.telemetry.snapshots.topic}")
     private String snapshotsTopic;
     private final Duration consumeAttemptTimeout;
+    private static final long OFFSET_INCREMENT = 1L;
 
     private final AnalyzerService analyzerService;
     private final KafkaConsumer<String, SensorsSnapshotAvro> consumer;
@@ -60,7 +61,7 @@ public class SnapshotProcessor {
                         analyzerService.handleSnapshot(record.value());
                     }
 
-                    long nextOffset = partitionRecords.getLast().offset() + 1;
+                    long nextOffset = partitionRecords.getLast().offset() + OFFSET_INCREMENT;
                     offsetsToCommit.put(partition, new OffsetAndMetadata(nextOffset));
                 }
 

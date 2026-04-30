@@ -34,8 +34,8 @@ public class AggregationStarter {
     private String sensorsTopic;
     @Value("${sht.telemetry.snapshots.topic}")
     private String snapshotsTopic;
-
-    private static final Duration CONSUME_ATTEMPT_TIMEOUT = Duration.ofMillis(1000);
+    private static final long OFFSET_INCREMENT = 1L;
+    private final Duration consumeAttemptTimeout;
 
     private final KafkaConsumer<String, SensorEventAvro> consumer;
     private final KafkaProducer<String, SensorsSnapshotAvro> producer;
@@ -44,10 +44,13 @@ public class AggregationStarter {
     private final SnapshotService snapshotService;
 
     @Autowired
-    public AggregationStarter(SnapshotService snapshotService, @Value("${sht.bootstrap}") String bootstrapServer) {
+    public AggregationStarter(SnapshotService snapshotService,
+                              @Value("${sht.bootstrap}") String bootstrapServer,
+                              @Value("${sht.consumeAttemptTimeout}") int consumeAttemptTimeout) {
         this.snapshotService = snapshotService;
         this.consumer = new KafkaConsumer<>(getConsumerConfig(bootstrapServer));
         this.producer = new KafkaProducer<>(getProducerConfig(bootstrapServer));
+        this.consumeAttemptTimeout = Duration.ofMillis(consumeAttemptTimeout);
 
         Runtime.getRuntime().addShutdownHook(new Thread(consumer::wakeup));
     }
@@ -57,7 +60,7 @@ public class AggregationStarter {
             consumer.subscribe(List.of(sensorsTopic));
 
             while (true) {
-                ConsumerRecords<String, SensorEventAvro> consumerRecords = consumer.poll(CONSUME_ATTEMPT_TIMEOUT);
+                ConsumerRecords<String, SensorEventAvro> consumerRecords = consumer.poll(consumeAttemptTimeout);
 
                 if (!consumerRecords.isEmpty()) {
                     for (ConsumerRecord<String, SensorEventAvro> record : consumerRecords) {
@@ -66,7 +69,7 @@ public class AggregationStarter {
                                 this.producer.send(new ProducerRecord<>(snapshotsTopic, sensorsSnapshotAvro)));
 
                         currentOffsets.put(new TopicPartition(record.topic(), record.partition()),
-                                new OffsetAndMetadata(record.offset() + 1));
+                                new OffsetAndMetadata(record.offset() + OFFSET_INCREMENT));
                     }
 
                     producer.flush();
