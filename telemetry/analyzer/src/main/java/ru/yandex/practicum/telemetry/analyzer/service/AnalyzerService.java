@@ -5,19 +5,19 @@ import io.grpc.StatusRuntimeException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ru.yandex.practicum.telemetry.analyzer.model.*;
-import ru.yandex.practicum.telemetry.analyzer.model.enums.ActionType;
-import ru.yandex.practicum.telemetry.analyzer.model.enums.ConditionOperation;
-import ru.yandex.practicum.telemetry.analyzer.model.enums.ConditionType;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.telemetry.analyzer.repository.ScenarioRepository;
-import ru.yandex.practicum.telemetry.analyzer.repository.SensorRepository;
 import ru.yandex.practicum.grpc.telemetry.event.ActionTypeProto;
 import ru.yandex.practicum.grpc.telemetry.event.DeviceActionProto;
 import ru.yandex.practicum.grpc.telemetry.event.DeviceActionRequest;
 import ru.yandex.practicum.grpc.telemetry.hubrouter.HubRouterControllerGrpc;
 import ru.yandex.practicum.kafka.telemetry.event.*;
+import ru.yandex.practicum.telemetry.analyzer.model.*;
+import ru.yandex.practicum.telemetry.analyzer.model.enums.ActionType;
+import ru.yandex.practicum.telemetry.analyzer.model.enums.ConditionOperation;
+import ru.yandex.practicum.telemetry.analyzer.model.enums.ConditionType;
+import ru.yandex.practicum.telemetry.analyzer.repository.ScenarioRepository;
+import ru.yandex.practicum.telemetry.analyzer.repository.SensorRepository;
 
 import java.util.*;
 
@@ -27,6 +27,9 @@ import java.util.*;
 public class AnalyzerService {
     private final ScenarioRepository scenarioRepository;
     private final SensorRepository sensorRepository;
+
+    private static final int TRUE = 1;
+    private static final int FALSE = 0;
 
     @GrpcClient("hub-router")
     private HubRouterControllerGrpc.HubRouterControllerBlockingStub hubRouterClient;
@@ -158,28 +161,30 @@ public class AnalyzerService {
     }
 
     private Optional<Integer> readValue(ConditionType type, Object payload) {
-        if (type == null || payload == null) {
-            return Optional.empty();
-        }
+        if (type == null || payload == null) return Optional.empty();
 
-        if (type.equals(ConditionType.MOTION) && payload instanceof MotionSensorAvro) {
-            return Optional.of(((MotionSensorAvro) payload).getMotion() ? 1 : 0);
-        } else if (type.equals(ConditionType.LUMINOSITY) && payload instanceof LightSensorAvro) {
-            return Optional.of(((LightSensorAvro) payload).getLuminosity());
-        } else if (type.equals(ConditionType.SWITCH) && payload instanceof SwitchSensorAvro) {
-            return Optional.of(((SwitchSensorAvro) payload).getState() ? 1 : 0);
-        } else if (type.equals(ConditionType.TEMPERATURE)) {
-            if (payload instanceof TemperatureSensorAvro) {
-                return Optional.of(((TemperatureSensorAvro) payload).getTemperatureC());
-            } else if (payload instanceof ClimateSensorAvro) {
-                return Optional.of(((ClimateSensorAvro) payload).getTemperatureC());
-            }
-        } else if (type.equals(ConditionType.CO2LEVEL) && payload instanceof ClimateSensorAvro) {
-            return Optional.of(((ClimateSensorAvro) payload).getCo2Level());
-        } else if (type.equals(ConditionType.HUMIDITY) && payload instanceof ClimateSensorAvro) {
-            return Optional.of(((ClimateSensorAvro) payload).getHumidity());
-        }
+        return switch (type) {
+            case MOTION -> payload instanceof MotionSensorAvro m
+                    ? Optional.of(m.getMotion() ? TRUE : FALSE) : Optional.empty();
+            case LUMINOSITY -> payload instanceof LightSensorAvro l
+                    ? Optional.of(l.getLuminosity()) : Optional.empty();
+            case SWITCH -> payload instanceof SwitchSensorAvro s
+                    ? Optional.of(s.getState() ? TRUE : FALSE) : Optional.empty();
+            case TEMPERATURE -> extractTemperature(payload);
+            case CO2LEVEL -> payload instanceof ClimateSensorAvro c
+                    ? Optional.of(c.getCo2Level()) : Optional.empty();
+            case HUMIDITY -> payload instanceof ClimateSensorAvro c
+                    ? Optional.of(c.getHumidity()) : Optional.empty();
+        };
+    }
 
+    private Optional<Integer> extractTemperature(Object payload) {
+        if (payload instanceof TemperatureSensorAvro t) {
+            return Optional.of(t.getTemperatureC());
+        }
+        if (payload instanceof ClimateSensorAvro c) {
+            return Optional.of(c.getTemperatureC());
+        }
         return Optional.empty();
     }
 
@@ -224,10 +229,9 @@ public class AnalyzerService {
 
     private Integer asInteger(Object value) {
         return switch (value) {
-            case null -> null;
             case Integer integer -> integer;
-            case Boolean bool -> bool ? 1 : 0;
-            default -> null;
+            case Boolean bool -> bool ? TRUE : FALSE;
+            case null, default -> null;
         };
     }
 }
