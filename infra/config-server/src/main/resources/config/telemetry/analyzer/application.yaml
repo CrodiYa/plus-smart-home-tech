@@ -15,7 +15,7 @@ spring:
       mode: always
       schema-locations: classpath:schema.sql
 
-grcp:
+grpc:
   client:
     hub-router:
       address: "static://localhost:59090"
