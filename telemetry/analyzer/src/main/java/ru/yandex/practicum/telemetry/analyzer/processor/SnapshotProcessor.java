@@ -23,7 +23,7 @@ import java.util.Properties;
 @Component
 public class SnapshotProcessor {
 
-    @Value("${sht.telemetry.snapshots.topic}")
+    @Value("${analyzer.kafka.topic.snapshots}")
     private String snapshotsTopic;
     private final Duration consumeAttemptTimeout;
     private static final long OFFSET_INCREMENT = 1L;
@@ -33,8 +33,8 @@ public class SnapshotProcessor {
 
     @Autowired
     public SnapshotProcessor(AnalyzerService analyzerService,
-                             @Value("${sht.bootstrap}") String bootstrapServer,
-                             @Value("${sht.consumeAttemptTimeout}") int consumeAttemptTimeout) {
+                             @Value("${analyzer.kafka.bootstrap}") String bootstrapServer,
+                             @Value("${analyzer.kafka.consume.attempt.timeout}") int consumeAttemptTimeout) {
         this.analyzerService = analyzerService;
         this.consumer = new KafkaConsumer<>(getConsumerConfig(bootstrapServer));
         this.consumeAttemptTimeout = Duration.ofMillis(consumeAttemptTimeout);
