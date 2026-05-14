@@ -1,0 +1,9 @@
+spring.output.ansi.enabled: ALWAYS
+
+aggregator:
+  kafka:
+    bootstrap: "localhost:9092"
+    consume.attempt.timeout: 100
+    topic:
+      sensors: "telemetry.sensors.v1"
+      snapshots: "telemetry.snapshots.v1"

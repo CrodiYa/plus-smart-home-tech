@@ -30,9 +30,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 public class AggregationStarter {
 
-    @Value("${sht.telemetry.sensors.topic}")
+    @Value("${aggregator.kafka.topic.sensors}")
     private String sensorsTopic;
-    @Value("${sht.telemetry.snapshots.topic}")
+    @Value("${aggregator.kafka.topic.snapshots}")
     private String snapshotsTopic;
     private static final long OFFSET_INCREMENT = 1L;
     private final Duration consumeAttemptTimeout;
@@ -45,8 +45,8 @@ public class AggregationStarter {
 
     @Autowired
     public AggregationStarter(SnapshotService snapshotService,
-                              @Value("${sht.bootstrap}") String bootstrapServer,
-                              @Value("${sht.consumeAttemptTimeout}") int consumeAttemptTimeout) {
+                              @Value("${aggregator.kafka.bootstrap}") String bootstrapServer,
+                              @Value("${aggregator.kafka.consume.attempt.timeout}") int consumeAttemptTimeout) {
         this.snapshotService = snapshotService;
         this.consumer = new KafkaConsumer<>(getConsumerConfig(bootstrapServer));
         this.producer = new KafkaProducer<>(getProducerConfig(bootstrapServer));
