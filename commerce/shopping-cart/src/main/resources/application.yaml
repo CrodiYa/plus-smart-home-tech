@@ -3,10 +3,6 @@ spring:
     name: shopping-cart
   config:
     import: "optional:configserver:"
-  sql:
-    init:
-      mode: always
-      schema-locations: classpath:schema.sql
   cloud:
     config:
       fail-fast: true

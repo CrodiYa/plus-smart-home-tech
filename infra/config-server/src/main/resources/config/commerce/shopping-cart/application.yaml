@@ -3,14 +3,15 @@ spring:
     ansi:
       enabled: ALWAYS
   datasource:
-    driverClassName: "org.postgresql.Driver"
-    url: "jdbc:postgresql://localhost:5432/shopping_cart"
-    username: "postgres"
-    password: "password"
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/commerce?currentSchema=shopping_cart
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:password}
   jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: none
   sql:
     init:
       mode: always
       schema-locations: classpath:schema.sql
+      continue-on-error: true
