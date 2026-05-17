@@ -5,8 +5,8 @@ spring:
   datasource:
     driverClassName: "org.postgresql.Driver"
     url: "jdbc:postgresql://localhost:5432/smarthome"
-    username: "smarthome"
-    password: "smarthome"
+    username: "root"
+    password: "root"
   jpa:
     hibernate:
       ddl-auto: none
