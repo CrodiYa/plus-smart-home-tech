@@ -30,3 +30,18 @@ spring:
       mode: always
       schema-locations: classpath:schema.sql
       continue-on-error: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
+
+eureka:
+  instance:
+    hostname: localhost
+    preferIpAddress: false
+    instance-id: warehouse:${random.value}
