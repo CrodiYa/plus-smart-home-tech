@@ -2,7 +2,11 @@ spring:
   application:
     name: shopping-cart
   config:
-    import: "configserver:"
+    import: "optional:configserver:"
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
   cloud:
     config:
       fail-fast: true
