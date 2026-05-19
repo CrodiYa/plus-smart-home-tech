@@ -27,7 +27,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class AggregationStarter {
 
     @Value("${aggregator.kafka.topic.sensors}")
