@@ -1,0 +1,43 @@
+package ru.yandex.practicum.model;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import ru.yandex.practicum.store.enums.ProductCategory;
+import ru.yandex.practicum.store.enums.ProductState;
+import ru.yandex.practicum.store.enums.QuantityState;
+
+import java.util.UUID;
+
+@Getter
+@Setter
+@Entity
+@Table(name = "products", schema = "store")
+public class Product {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID productId;
+
+    @Column(nullable = false)
+    private String productName;
+
+    @Column(nullable = false)
+    private String description;
+
+    private String imageSrc;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private QuantityState quantityState;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ProductState productState;
+
+    @Enumerated(EnumType.STRING)
+    private ProductCategory productCategory;
+
+    @Column(nullable = false)
+    private Double price;
+}

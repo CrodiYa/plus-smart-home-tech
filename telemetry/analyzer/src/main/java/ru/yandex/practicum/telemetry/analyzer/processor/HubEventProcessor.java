@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class HubEventProcessor implements Runnable {
 
-    @Value("${sht.telemetry.hubs.topic}")
+    @Value("${analyzer.kafka.topic.hubs}")
     private String hubsTopic;
     private final Duration consumeAttemptTimeout;
     private static final long OFFSET_INCREMENT = 1L;
@@ -34,8 +34,8 @@ public class HubEventProcessor implements Runnable {
 
     @Autowired
     public HubEventProcessor(AnalyzerService analyzerService,
-                             @Value("${sht.bootstrap}") String bootstrapServer,
-                             @Value("${sht.consumeAttemptTimeout}") int consumeAttemptTimeout) {
+                             @Value("${analyzer.kafka.bootstrap}") String bootstrapServer,
+                             @Value("${analyzer.kafka.consume.attempt.timeout}") int consumeAttemptTimeout) {
         this.analyzerService = analyzerService;
         this.consumer = new KafkaConsumer<>(getConsumerConfig(bootstrapServer));
         this.consumeAttemptTimeout = Duration.ofMillis(consumeAttemptTimeout);

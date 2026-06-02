@@ -1,0 +1,13 @@
+spring.output.ansi.enabled: ALWAYS
+
+grpc:
+  server:
+    port: 59091
+
+collector:
+  kafka:
+    bootstrap: "localhost:9092"
+    consume.attempt.timeout: 100
+    topic:
+      sensors: "telemetry.sensors.v1"
+      hubs: "telemetry.hubs.v1"
