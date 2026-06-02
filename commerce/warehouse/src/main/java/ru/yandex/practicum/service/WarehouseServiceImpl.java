@@ -27,14 +27,17 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class WarehouseServiceImpl implements WarehouseService {
 
-    private final WarehouseRepository warehouseRepository;
-    private final ProductMapper productMapper;
+    private static final int ARRAY_START = 0;
 
     private static final String[] ADDRESSES =
             new String[]{"ADDRESS_1", "ADDRESS_2"};
 
     private static final String CURRENT_ADDRESS =
-            ADDRESSES[Random.from(new SecureRandom()).nextInt(0, ADDRESSES.length)];
+            ADDRESSES[Random.from(new SecureRandom()).nextInt(ARRAY_START, ADDRESSES.length)];
+
+    private final WarehouseRepository warehouseRepository;
+    private final ProductMapper productMapper;
+
 
     @Override
     public void addNewProduct(NewProductInWarehouseRequest request) {

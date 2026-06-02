@@ -6,6 +6,9 @@ import ru.yandex.practicum.warehouse.dto.NewProductInWarehouseRequest;
 
 @Component
 public class ProductMapper {
+
+    private final long INITIAL_QUANTITY = 0L;
+
     public WarehouseProduct toWarehouseProduct(NewProductInWarehouseRequest request) {
         if (request == null) {
             return null;
@@ -20,7 +23,7 @@ public class ProductMapper {
             warehouseProduct.setHeight(request.getDimension().getHeight());
             warehouseProduct.setDepth(request.getDimension().getDepth());
         }
-        warehouseProduct.setQuantity(0L);
+        warehouseProduct.setQuantity(INITIAL_QUANTITY);
         return warehouseProduct;
     }
 }
