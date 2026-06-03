@@ -1,0 +1,12 @@
+server:
+  port: 8085
+spring:
+  output:
+    ansi:
+      enabled: ALWAYS
+
+eureka:
+  instance:
+    hostname: localhost
+    preferIpAddress: false
+    instance-id: delivery:${random.value}

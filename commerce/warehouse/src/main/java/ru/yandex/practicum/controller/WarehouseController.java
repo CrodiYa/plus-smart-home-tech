@@ -8,9 +8,10 @@ import ru.yandex.practicum.cart.dto.BookedProductsDto;
 import ru.yandex.practicum.cart.dto.ShoppingCartDto;
 import ru.yandex.practicum.service.WarehouseService;
 import ru.yandex.practicum.warehouse.controller.WarehouseClient;
-import ru.yandex.practicum.warehouse.dto.AddProductToWarehouseRequest;
-import ru.yandex.practicum.warehouse.dto.AddressDto;
-import ru.yandex.practicum.warehouse.dto.NewProductInWarehouseRequest;
+import ru.yandex.practicum.warehouse.dto.*;
+
+import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/warehouse")
@@ -37,5 +38,20 @@ public class WarehouseController implements WarehouseClient {
     @Override
     public AddressDto getAddress() {
         return warehouseService.getAddress();
+    }
+
+    @Override
+    public void shipped(ShippedDeliveryRequest request) {
+        warehouseService.shipped(request);
+    }
+
+    @Override
+    public BookedProductsDto assembly(AssemblyProductsForOrderRequest request) {
+        return warehouseService.assembly(request);
+    }
+
+    @Override
+    public void returnProducts(Map<UUID, Integer> products) {
+        warehouseService.returnProducts(products);
     }
 }
