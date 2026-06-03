@@ -1,0 +1,48 @@
+server:
+  port: 8084
+spring:
+  output:
+    ansi:
+      enabled: ALWAYS
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      default-filters:
+        - PrefixPath=/api/v1
+      routes:
+        - id: shopping_cart_service_route
+          uri: lb://shopping-cart
+          predicates:
+            - Path=/shopping-cart/**
+        - id: shopping_store_service_route
+          uri: lb://shopping-store
+          predicates:
+            - Path=/shopping-store/**
+          filters:
+            - name: Retry
+              args:
+                retries: 3
+                statuses: INTERNAL_SERVER_ERROR, BAD_GATEWAY, SERVICE_UNAVAILABLE
+                methods: GET,POST,PUT,DELETE
+                backoff:
+                  firstBackoff: 100ms
+                  maxBackoff: 1s
+                  factor: 2
+            - id: warehouse_service_route
+              uri: lb://warehouse
+              predicates:
+                - Path=/warehouse/**
+            - id: order_service_route
+              uri: lb://order
+              predicates:
+                - Path=/order/**
+            - id: payment_service_route
+              uri: lb://payment
+              predicates:
+                - Path=/payment/**
+            - id: delivery_service_route
+              uri: lb://delivery
+              predicates:
+                - Path=/delivery/**
