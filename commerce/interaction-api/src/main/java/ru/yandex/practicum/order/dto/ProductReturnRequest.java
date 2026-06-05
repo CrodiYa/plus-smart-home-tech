@@ -12,5 +12,5 @@ import java.util.UUID;
 @Builder
 public class ProductReturnRequest {
     private UUID orderId;
-    Map<UUID, Integer> products;
+    private Map<UUID, Integer> products;
 }
